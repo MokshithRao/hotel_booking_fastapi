@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from database import Base, engine, LocalSession
-from schemas import Customer
+from schemas import Customer, Room, Booking
 import models
 
 
@@ -36,3 +36,30 @@ def get_customers():
 
     return all_customers
 
+
+@app.post("/rooms")
+def create_room(room: Room):
+    db = LocalSession()
+
+    new_room = models.Room(
+        room_number = room.room_number,
+        room_type = room.room_type,
+        price = room.price
+    )
+
+    db.add(new_room)
+    db.commit()
+    db.close()
+
+    return "Room added successfully"
+
+
+@app.get("/rooms")
+def get_rooms():
+    db = LocalSession()
+
+    all_rooms = db.query(models.Room).all()
+
+    db.close()
+
+    return all_rooms
