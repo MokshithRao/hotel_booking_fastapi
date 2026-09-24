@@ -1,0 +1,4 @@
+venv
+./python_clone
+tasks.db
+./__pycache__
