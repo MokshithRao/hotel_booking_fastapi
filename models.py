@@ -37,3 +37,6 @@ class Booking(Base):
     check_out = Column(Date, nullable=False)
     status = Column(String, default="Booked")
 
+
+
+

@@ -63,3 +63,51 @@ def get_rooms():
     db.close()
 
     return all_rooms
+
+
+@app.post("/bookings")
+def create_booking(booking: Booking):
+    db = LocalSession()
+
+    customer = db.query(models.Customer).filter(
+        models.Customer.customer_id == booking.customer_id
+    ).first()
+
+    if customer == None:
+        return "Customer Does not exist, enter valid customer ID"
+
+    room = db.query(models.Room).filter(
+        models.Room.room_id == booking.room_id
+    ).first()
+
+    if room == None:
+        return "Room not exist, enter valid room ID"
+
+    if room.is_available == False:
+        return "Room not available"
+
+    new_booking = models.Booking(
+        customer_id = booking.customer_id,
+        room_id = booking.room_id,
+        check_in = booking.check_in,
+        check_out =booking.check_out
+    )
+
+    db.add(new_booking)
+    room.is_available = False
+    db.commit()
+    db.close()
+
+    return "Booking added successfully"
+
+
+
+@app.get("/bookings")
+def get_bookings():
+    db = LocalSession()
+
+    all_bookings = db.query(models.Booking).all()
+
+    db.close()
+
+    return all_bookings
