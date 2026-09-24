@@ -24,3 +24,15 @@ def add_customer(customer: Customer):
     db.close()
 
     return "Customer added successfully"
+
+
+@app.get("/customers")
+def get_customers():
+    db = LocalSession()
+
+    all_customers = db.query(models.Customer).all()
+
+    db.close()
+
+    return all_customers
+
