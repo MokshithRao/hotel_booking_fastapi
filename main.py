@@ -111,3 +111,32 @@ def get_bookings():
     db.close()
 
     return all_bookings
+
+
+
+@app.delete("/bookings/{booking_id}")
+def cancel_booking(booking_id: int):
+    db = LocalSession()
+
+    booking = db.query(models.Booking).filter(
+        models.Booking.booking_id == booking_id
+    ).first()
+
+    if booking == None:
+        return "Booking does not exist"
+
+    booking.status = "Cancelled"
+
+    room = db.query(models.Room).filter(
+        models.Room.room_id == booking.room_id
+    ).first()
+
+    room.is_available = True
+
+    db.commit()
+    db.close()
+
+    return "Booking cancelled successfully"
+
+
+    
